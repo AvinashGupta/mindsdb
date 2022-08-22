@@ -2,6 +2,7 @@ from typing import Optional
 from collections import OrderedDict
 
 import pandas as pd
+from influxdb import InfluxDBClient
 from mindsdb_sql import parse_sql
 
 from mindsdb.integrations.libs.base_handler import DatabaseHandler
@@ -39,6 +40,12 @@ class InfluxDBHandler(DatabaseHandler):
         self.dialect = 'influxdb'
 
         self.connection_data = connection_data
+        self.host = connection_data.get("host")
+        self.port = int(connection_data.get("port") or 8086)
+        self.user = connection_data.get("username")
+        self.password = connection_data.get("password")
+        self.database = connection_data.get("database")
+
         self.kwargs = kwargs
 
         self.connection = None
@@ -53,6 +60,19 @@ class InfluxDBHandler(DatabaseHandler):
 
         if self.is_connected is True:
             return self.connection
+
+        config = {
+            'host': self.host,
+            'port': self.port,
+            'user': self.user,
+            'password': self.password,
+            'database': self.database
+        }
+
+        connection = InfluxDBClient(**config)
+        self.is_connected = True
+        self.connection = connection
+        return self.connection
 
 
     def disconnect(self):
