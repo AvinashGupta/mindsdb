@@ -192,10 +192,6 @@ class InfluxDBHandler(DatabaseHandler):
         """
 
 
-connection_args = OrderedDict(
-    
-)
+connection_args = OrderedDict()
 
-connection_args_example = OrderedDict(
-
-)
+connection_args_example = OrderedDict()
